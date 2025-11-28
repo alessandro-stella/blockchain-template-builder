@@ -22,6 +22,7 @@ pragma solidity >=0.8.0;
 // Auto-generated Solidity interface from template $template
 
 interface I$capitalized_name {
+  // WARNING: Declarations implemented by template $template, do not edit or remove
 EOF
 
 for contract in "${contracts[@]}"; do
@@ -41,13 +42,20 @@ for contract in "${contracts[@]}"; do
     fi
 done
 
+echo "" >> "$out_file"
+echo "  // End of dangerous section, add your custom interfaces down here" >> "$out_file"
+echo "" >> "$out_file"
 echo "}" >> "$out_file"
 
 echo
 echo "Generated file: $out_file"
 
+echo
+echo "Selected contracts implemented in $out_file"
+echo "If you want to add your custom implementations do it now before continuing"
+read -p "Press ENTER to proceed with the compilation..."
 
-echo "ABI compilation with solc..."
+echo "Starting ABI compilation with solc..."
 pushd "$project_path" > /dev/null
 
 npx solc@latest --abi "./contracts/contracts/interfaces/I${capitalized_name}.sol" \
@@ -92,8 +100,6 @@ for contract in "${contracts[@]}"; do
     in_block && /^## GO IMPLEMENTATION:/ { go_block=1; next }
     go_block && in_block { print }
   ' "./templates/$template")
-
-  echo "Function: $function_name"
 
   awk -v template="$template" -v fn="$function_name" -v insert="$code" '
     BEGIN {found_fn=0; inserted=0}

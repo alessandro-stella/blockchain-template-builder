@@ -11,7 +11,7 @@ fi
 
 mapfile -t options < <(grep '^# CONTRACT:' "$input_file" | awk -F ': ' '{print $2}')
 
-mapfile -t CONTRACTS_DESCRIPTIONS < <(grep '^## DESCRIPTION: ' "$input_file" | awk -F ': ' '{print $2}')
+mapfile -t MODULE_DESCRIPTIONS < <(grep '^## DESCRIPTION: ' "$input_file" | awk -F ': ' '{print $2}')
 
 current=0
 selected=()
@@ -19,7 +19,9 @@ option_lines=0
 
 draw_menu() {
     clear
-    echo "Select the desired template"
+    echo
+    echo "Selected template: $template"
+    echo "Choose which contracts you want to implement"
     echo "Use ↑ ↓ to move, space to select/deselect, Enter to confirm"
     echo
 
@@ -33,7 +35,7 @@ draw_menu() {
 
     echo
     echo "Description of ${options[current]}"
-    echo ${CONTRACTS_DESCRIPTIONS[current]}
+    echo ${MODULE_DESCRIPTIONS[current]}
 }
 
 read_key() {

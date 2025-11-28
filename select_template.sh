@@ -31,6 +31,7 @@ draw_menu() {
     if [[ $option_lines -gt 0 ]]; then
         tput cuu $option_lines
     else
+        echo
         echo "Select the desired template"
         echo "Use ↑ ↓ to move, space to select/deselect, Enter to confirm"
         echo
