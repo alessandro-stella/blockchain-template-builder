@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-mode="multiple"
+mode="unique"
 selected=()
 current=0
 option_lines=0

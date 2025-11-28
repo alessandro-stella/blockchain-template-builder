@@ -2,7 +2,7 @@
 
 ## DESCRIPTION: Efficiently updates the on-chain state of a user account or an NFT (e.g., scores, levels, resources). Useful for saving large amounts of game data with optimized storage writes.
 
-## SOL INTERFACE: function updateState(bytes32 gameId, address user, bytes calldata data) external returns (bool);
+## SOL INTERFACE: function updateState(bytes32 gameId, address user, bytes calldata data) external returns (bool success);
 
 ## GO IMPLEMENTATION: [EMPTY]
 
@@ -32,7 +32,7 @@
 
 ## DESCRIPTION: Performs the batch minting of thousands of NFTs with complex metadata in a single transaction. Optimizes storage loops and hashing cycles to significantly reduce gas costs for large minting operations.
 
-## SOL INTERFACE: function batchMint(address to, uint256 count, bytes32 metadataRoot) external returns (bool);
+## SOL INTERFACE: function batchMint(address to, uint256 count, bytes32 metadataRoot) external returns (bool success);
 
 ## GO IMPLEMENTATION: [EMPTY]
 
@@ -52,6 +52,6 @@
 
 ## DESCRIPTION: Verifies ECDSA signatures (or other curves like EdDSA, if supported) with a much lower gas cost than the native EVM 'ecrecover' function. This significantly improves the efficiency of user experience through meta-transaction systems.
 
-## SOL INTERFACE: function isValid(bytes32 dataHash, bytes calldata signature, address expectedSigner) external view returns (bool);
+## SOL INTERFACE: function isValid(bytes32 dataHash, bytes calldata signature, address expectedSigner) external view returns (bool success);
 
 ## GO IMPLEMENTATION: [EMPTY]
