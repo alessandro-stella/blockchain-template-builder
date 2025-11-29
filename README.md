@@ -123,9 +123,9 @@ Dunque, in un futuro non troppo lontano, qualsiasi programmatore, indipendenteme
 
 # TODO
 
-* Marketplace di tameplate
+* Marketplace di template (è fornito una semplice implementazione grafica)
 
 * Gestione piu sicura degli errori durante l'esecuzione dello script
 
-* Aggiungere sezione che gestisca eventuali librerie esterne richieste dai contracts
+* Aggiungere sezione del template che gestisca eventuali librerie esterne richieste dai contracts
 
