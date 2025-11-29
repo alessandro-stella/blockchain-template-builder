@@ -6,6 +6,7 @@
   <img src="./photos/ascii-art-text.png" width="600" style="display: block;">
 
 </div>
+<br>
 
 Il progetto consiste in uno script bash che mira a **semplificare la creazione di precompile contracts** durante la creazione di una blockchain, attraverso lo strumento Avalanche in [Precompile-EVM](https://github.com/ava-labs/precompile-evm).
 
