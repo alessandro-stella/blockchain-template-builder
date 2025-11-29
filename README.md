@@ -1,7 +1,7 @@
 
 <div style="display: flex; align-items: center; gap: 40px;">
 
-  <img src="./photos/beluga_logo_notext.png" width="250" style="display: block;">
+  <img src="./photos/beluga_logo_notext.png" width="200" style="display: block;">
 
   <img src="./photos/ascii-art-text.png" width="600" style="display: block;">
 
