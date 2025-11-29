@@ -1,10 +1,14 @@
 
-<div style="display: flex; align-items: center; justify-content: space-between;">
-  <img src="./photos/beluga_logo_notext.png" width="300">
-    
-  <p align="right" style="font-size: 40px; font-weight: bold;">
-    IL TUO TESTO QUI
-  </p>
+
+
+<div style="display: flex; align-items: center;">
+
+  <img src="path/to/image.png" width="250" style="margin-right: 20px;">
+
+  <div style="font-size: 48px; font-weight: 700; line-height: 1.2;">
+    BELUGA PROVIDER
+  </div>
+
 </div>
 
 Il progetto consiste in uno script bash che mira a **semplificare la creazione di precompile contracts** durante la creazione di una blockchain, attraverso lo strumento Avalanche in [Precompile-EVM](https://github.com/ava-labs/precompile-evm).
