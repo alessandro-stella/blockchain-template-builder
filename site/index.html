@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="it">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>BelugaProvider — Trading di template per blockchain L1</title>
+        <meta
+            name="description"
+            content="BelugaProvider: condividi e compra template dinamici per creare blockchain L1. Vendi in fiat o crypto, con contratti implementati." />
+        <link rel="icon" type="image/png" href="../photos/beluga_logo_notext.png" />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+            rel="stylesheet" />
+
+        <style>
+            :root {
+                --bg: #0d1117;
+                --surface: #161b22;
+                --surface-2: #1f2937;
+                --text: #e6edf3;
+                --text-soft: #9baec8;
+                --primary: #3b82f6;
+                --primary-700: #2563eb;
+                --accent: #60a5fa;
+                --success: #10b981;
+                --warning: #f59e0b;
+                --danger: #ef4444;
+                --border: #2d3748;
+                --muted: #374151;
+                --shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+                --radius-lg: 16px;
+                --radius-md: 12px;
+                --radius-sm: 10px;
+                --max-w: 1150px;
+            }
+
+            * {
+                box-sizing: border-box;
+            }
+            html,
+            body {
+                height: 100%;
+            }
+
+            body {
+                margin: 0;
+                font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto,
+                    Helvetica, Arial;
+                color: var(--text);
+                background: radial-gradient(
+                    circle at top left,
+                    #1f2937 0%,
+                    #0d1117 40%,
+                    #000000 100%
+                );
+                background-attachment: fixed;
+                line-height: 1.65;
+            }
+
+            a {
+                color: var(--primary-700);
+                text-decoration: none;
+            }
+            a:hover {
+                text-decoration: underline;
+            }
+
+            .container {
+                max-width: var(--max-w);
+                width: 100%;
+                margin: 0 auto;
+                padding: 0 24px;
+            }
+
+            header {
+                position: sticky;
+                top: 0;
+                z-index: 50;
+                backdrop-filter: saturate(120%) blur(10px);
+                background: var(--surface);
+                border-bottom: 1px solid var(--border);
+            }
+
+            .nav {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 14px 20px;
+            }
+
+            .brand {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+            }
+
+            .logo {
+                background-image: url("../photos/beluga_logo_notext.png");
+                background-size: contain;
+                background-repeat: no-repeat;
+                background-position: center;
+                height: 40px;
+                width: 40px;
+            }
+
+            .brand h1 {
+                margin: 0;
+                font-size: 1.25rem;
+                font-weight: 800;
+                letter-spacing: 0.2px;
+            }
+
+            .nav-links {
+                display: flex;
+                align-items: center;
+                gap: 18px;
+            }
+
+            .btn {
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                background: var(--surface);
+                border: 1px solid var(--border);
+                color: var(--text);
+                padding: 10px 14px;
+                border-radius: var(--radius-md);
+                box-shadow: var(--shadow);
+                font-weight: 600;
+                transition: transform 0.08s ease, box-shadow 0.2s ease,
+                    border-color 0.2s ease;
+            }
+            .btn:hover {
+                transform: translateY(-1px);
+                border-color: var(--muted);
+            }
+
+            .btn-primary {
+                background: linear-gradient(
+                    180deg,
+                    var(--primary) 0%,
+                    var(--primary-700) 100%
+                );
+                color: #fff;
+                border: none;
+                box-shadow: 0 12px 24px rgba(59, 130, 246, 0.25);
+            }
+
+            .btn-ghost {
+                background: transparent;
+                border: none;
+                box-shadow: none;
+                color: var(--text-soft);
+                font-weight: 600;
+            }
+
+            .hero {
+                padding: 80px 0 60px;
+            }
+
+            .hero-card {
+                background: linear-gradient(
+                    180deg,
+                    var(--surface) 0%,
+                    var(--surface-2) 100%
+                );
+                border: 1px solid var(--border);
+                border-radius: var(--radius-lg);
+                box-shadow: var(--shadow);
+                padding: 40px;
+                display: grid;
+                grid-template-columns: 1.2fr 0.8fr;
+                gap: 40px;
+                align-items: center;
+                position: relative;
+            }
+
+            .hero h2 {
+                margin: 0 0 20px;
+                font-size: 2.5rem;
+                font-weight: 800;
+                color: var(--primary);
+            }
+
+            .hero p {
+                margin: 0 0 24px;
+                color: var(--text-soft);
+                font-size: 1.1rem;
+                max-width: 60ch;
+                line-height: 1.7;
+            }
+
+            .stat-row {
+                display: flex;
+                gap: 20px;
+                flex-wrap: wrap;
+                margin-top: 24px;
+            }
+
+            .stat {
+                background: var(--surface-2);
+                border: 1px solid var(--border);
+                border-radius: 14px;
+                padding: 12px 18px;
+                font-weight: 600;
+                color: var(--text);
+                box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.15);
+                transition: transform 0.2s ease;
+            }
+
+            .stat:hover {
+                transform: translateY(-3px);
+            }
+
+            .hero-visual {
+                background: radial-gradient(
+                    circle at center,
+                    var(--primary) 0%,
+                    transparent 70%
+                );
+                border-radius: var(--radius-lg);
+                height: 90%;
+                width: auto;
+                aspect-ratio: 1/1;
+                position: absolute;
+                right: 45px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                overflow: hidden;
+            }
+
+            .hero-logo {
+                max-width: 70%;
+                max-height: 70%;
+                z-index: 1;
+            }
+
+            .section {
+                padding: 28px 0;
+            }
+            .section h3 {
+                font-size: 1.35rem;
+                margin: 0 0 14px;
+                font-weight: 800;
+            }
+            .subtext {
+                color: var(--text-soft);
+                margin-bottom: 18px;
+            }
+
+            .grid {
+                display: grid;
+                gap: 18px;
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+            @media (max-width: 980px) {
+                .grid {
+                    grid-template-columns: repeat(2, minmax(0, 1fr));
+                }
+            }
+            @media (max-width: 680px) {
+                .grid {
+                    grid-template-columns: 1fr;
+                }
+            }
+
+            .card {
+                background: var(--surface);
+                border: 1px solid var(--border);
+                border-radius: var(--radius-lg);
+                box-shadow: var(--shadow);
+                padding: 16px;
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .title-row {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                height: min-content;
+            }
+            h4 {
+                margin: 0;
+            }
+            .badge {
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                border: 1px solid var(--accent);
+                color: var(--accent);
+                border-radius: 999px;
+                padding: 6px 10px;
+                font-weight: 600;
+                font-size: 0.85rem;
+            }
+
+            .desc {
+                color: var(--text-soft);
+                margin: 4px 0 8px;
+            }
+            .contracts {
+                display: flex;
+                gap: 8px;
+                flex-wrap: wrap;
+            }
+            .chip {
+                background: var(--surface-2);
+                border: 1px solid var(--border);
+                color: var(--text);
+                padding: 6px 10px;
+                border-radius: 999px;
+                font-weight: 600;
+                font-size: 0.85rem;
+            }
+
+            .price-row {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                flex-wrap: wrap;
+                margin-top: 6px;
+            }
+            .price {
+                font-weight: 800;
+                color: var(--text);
+            }
+            .price.crypto {
+                color: var(--success);
+            }
+
+            .card-actions {
+                display: flex;
+                gap: 10px;
+                margin-top: 20px;
+            }
+
+            .form {
+                background: var(--surface);
+                border: 1px solid var(--border);
+                border-radius: var(--radius-lg);
+                box-shadow: var(--shadow);
+                padding: 18px;
+            }
+
+            .row {
+                display: grid;
+                gap: 14px;
+                grid-template-columns: 1fr 1fr;
+            }
+            @media (max-width: 780px) {
+                .row {
+                    grid-template-columns: 1fr;
+                }
+            }
+
+            .field {
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+            }
+            .label {
+                font-weight: 700;
+                margin-top: 10px;
+            }
+            .help {
+                color: var(--text-soft);
+                font-size: 0.9rem;
+            }
+
+            input,
+            textarea,
+            select {
+                border: 1px solid var(--border);
+                background: var(--surface);
+                border-radius: var(--radius-md);
+                padding: 10px 12px;
+                font-size: 1rem;
+                color: var(--text);
+                outline: none;
+                transition: border-color;
+            }
+
+            input:focus,
+            textarea:focus,
+            select:focus {
+                border-color: var(--primary);
+                box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.25);
+            }
+
+            .inline {
+                display: flex;
+                gap: 12px;
+                align-items: center;
+                flex-wrap: wrap;
+            }
+
+            .divider {
+                height: 1px;
+                background: var(--border);
+                margin: 14px 0;
+            }
+
+            footer {
+                margin-top: 24px;
+                padding: 20px 0;
+                color: var(--text-soft);
+            }
+
+            .footer-card {
+                max-width: unset;
+                background: var(--surface);
+                border: 1px solid var(--border);
+                box-shadow: var(--shadow);
+                padding: 18px;
+            }
+
+            .lift:hover {
+                transform: translateY(-2px);
+                transition: transform 0.08s ease;
+            }
+        </style>
+    </head>
+    <body>
+        <header>
+            <div class="container nav">
+                <div class="brand">
+                    <div class="logo"></div>
+                    <h1>BelugaProvider</h1>
+                </div>
+                <nav class="nav-links">
+                    <a class="btn-ghost" href="#marketplace">Marketplace</a>
+                    <a class="btn-ghost" href="#sell">Vendi template</a>
+                    <a class="btn" href="#how-it-works">Come funziona</a>
+                    <a class="btn btn-primary" href="#signup">Iscriviti</a>
+                </nav>
+            </div>
+        </header>
+
+        <main>
+            <!-- Hero -->
+
+            <section class="hero">
+                <div class="container">
+                    <div class="hero-card">
+                        <div class="hero-content">
+                            <h2>Trading di template <br />dinamici per L1</h2>
+                            <p>
+                                Condividi, compra e vendi template pronti per la
+                                creazione di blockchain Layer 1. Ogni template
+                                include titolo, descrizione, contratti
+                                implementati e prezzi in valuta fiat o crypto.
+                            </p>
+                            <div class="inline">
+                                <a
+                                    class="btn btn-primary lift"
+                                    href="#marketplace"
+                                    >Esplora template</a
+                                >
+                                <a class="btn lift" href="#sell"
+                                    >Metti in vendita</a
+                                >
+                            </div>
+                        </div>
+                        <div class="hero-visual">
+                            <img
+                                src="../photos/beluga_logo_notext.png"
+                                alt="Beluga Logo"
+                                class="hero-logo" />
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Marketplace -->
+            <section id="marketplace" class="section">
+                <div class="container">
+                    <h3>Marketplace dei template</h3>
+                    <p class="subtext">
+                        Scopri template dinamici per blockchain L1.
+                    </p>
+
+                    <div class="grid">
+                        <!-- Card Gaming -->
+                        <article class="card lift">
+                            <div class="title-row">
+                                <h4>QuestChain</h4>
+                                <span class="badge">Genere: Gaming</span>
+                            </div>
+                            <p class="desc">
+                                Template per ecosistemi videoludici
+                                decentralizzati con NFT e marketplace.
+                            </p>
+                            <div class="contracts">
+                                <span class="chip">NFT Marketplace</span>
+                                <span class="chip">Token Reward</span>
+                                <span class="chip">Leaderboard</span>
+                                <span class="chip">In-game Economy</span>
+                            </div>
+                            <div class="price-row">
+                                <span class="price">€ 1.200</span>
+                                <span class="price crypto">0.4 ETH</span>
+                                <span class="badge solid">Licenza: Pro</span>
+                            </div>
+                            <div class="card-actions">
+                                <a class="btn btn-primary" href="#buy"
+                                    >Acquista</a
+                                >
+                                <a class="btn" href="#details">Dettagli</a>
+                            </div>
+                        </article>
+
+                        <!-- Card Social -->
+                        <article class="card lift">
+                            <div class="title-row">
+                                <h4>ConnectSphere</h4>
+                                <span class="badge">Genere: Social</span>
+                            </div>
+                            <p class="desc">
+                                Blockchain per social network decentralizzati
+                                con profili e feed.
+                            </p>
+                            <div class="contracts">
+                                <span class="chip">Profile Registry</span>
+                                <span class="chip">Content Feed</span>
+                                <span class="chip">Moderation DAO</span>
+                                <span class="chip">Social Token</span>
+                            </div>
+                            <div class="price-row">
+                                <span class="price">$ 980</span>
+                                <span class="price crypto">20 SOL</span>
+                                <span class="badge">Licenza: OSS</span>
+                            </div>
+                            <div class="card-actions">
+                                <a class="btn btn-primary" href="#buy"
+                                    >Acquista</a
+                                >
+                                <a class="btn" href="#details">Dettagli</a>
+                            </div>
+                        </article>
+
+                        <!-- Card Educational -->
+                        <article class="card lift">
+                            <div class="title-row">
+                                <h4>EduLedger</h4>
+                                <span class="badge">Genere: Educational</span>
+                            </div>
+                            <p class="desc">
+                                Template per università con certificati digitali
+                                e gestione corsi.
+                            </p>
+                            <div class="contracts">
+                                <span class="chip">Digital Certificates</span>
+                                <span class="chip">Course Registry</span>
+                                <span class="chip">Scholarship DAO</span>
+                                <span class="chip">Exam Records</span>
+                            </div>
+                            <div class="price-row">
+                                <span class="price">€ 2.500</span>
+                                <span class="price crypto">1.2 ETH</span>
+                                <span class="badge solid"
+                                    >Licenza: Enterprise</span
+                                >
+                            </div>
+                            <div class="card-actions">
+                                <a class="btn btn-primary" href="#buy"
+                                    >Acquista</a
+                                >
+                                <a class="btn" href="#details">Dettagli</a>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+            </section>
+
+            <!-- How it works -->
+            <section id="how-it-works" class="section">
+                <div class="container">
+                    <h3>Come funziona</h3>
+                    <div
+                        class="grid"
+                        style="
+                            grid-template-columns: repeat(3, minmax(0, 1fr));
+                        ">
+                        <div class="card">
+                            <strong>Pubblica</strong>
+                            <p class="desc">
+                                Crea un annuncio con titolo, descrizione,
+                                contratti e prezzi in fiat/crypto.
+                            </p>
+                        </div>
+                        <div class="card">
+                            <strong>Verifica</strong>
+                            <p class="desc">
+                                Allega audit o test coverage per aumentare
+                                fiducia e visibilità.
+                            </p>
+                        </div>
+                        <div class="card">
+                            <strong>Vendi</strong>
+                            <p class="desc">
+                                Gli acquirenti possono pagare con carte o wallet
+                                crypto.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Sell form -->
+            <section id="sell" class="section">
+                <div class="container">
+                    <h3>Metti in vendita il tuo template</h3>
+                    <p class="subtext">
+                        Compila i campi per pubblicare il tuo template su
+                        BelugaProvider.
+                    </p>
+
+                    <form class="form" action="#" method="post">
+                        <div class="row">
+                            <div class="field">
+                                <label class="label" for="title"
+                                    >Titolo del template</label
+                                >
+                                <input
+                                    id="title"
+                                    name="title"
+                                    type="text"
+                                    placeholder="Es. Fjord PoS Governance"
+                                    required />
+                            </div>
+                            <div class="field">
+                                <label class="label" for="license"
+                                    >Licenza</label
+                                >
+                                <select id="license" name="license">
+                                    <option>OSS</option>
+                                    <option>Pro</option>
+                                    <option>Enterprise</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label class="label" for="description"
+                                >Descrizione</label
+                            >
+                            <textarea
+                                id="description"
+                                name="description"
+                                placeholder="Descrivi obiettivi e moduli inclusi..."
+                                required></textarea>
+                        </div>
+
+                        <div class="field">
+                            <label class="label" for="contracts"
+                                >Contratti implementati</label
+                            >
+                            <input
+                                id="contracts"
+                                name="contracts"
+                                type="text"
+                                placeholder="Es. Consenso PoS, Staking, Treasury"
+                                required />
+                        </div>
+
+                        <div class="divider"></div>
+
+                        <div class="row">
+                            <div class="field">
+                                <label class="label" for="fiatPrice"
+                                    >Prezzo in valuta fiat</label
+                                >
+                                <div class="inline">
+                                    <input
+                                        id="fiatPrice"
+                                        name="fiatPrice"
+                                        type="number"
+                                        step="0.01"
+                                        placeholder="Es. 1200" />
+                                </div>
+                                <span class="help"
+                                    >Imposta un prezzo in EUR o USD
+                                    (facoltativo).</span
+                                >
+                            </div>
+
+                            <div class="field">
+                                <label class="label" for="cryptoPrice"
+                                    >Prezzo in crypto</label
+                                >
+                                <div class="inline">
+                                    <select
+                                        name="cryptoCurrency"
+                                        aria-label="Valuta crypto">
+                                        <option value="ETH">ETH</option>
+                                        <option value="SOL">SOL</option>
+                                        <option value="USDC">USDC</option>
+                                    </select>
+                                    <input
+                                        id="cryptoPrice"
+                                        name="cryptoPrice"
+                                        type="number"
+                                        step="0.0001"
+                                        placeholder="Es. 0.75" />
+                                </div>
+                                <span class="help"
+                                    >In alternativa o in aggiunta, definisci un
+                                    prezzo crypto.</span
+                                >
+                            </div>
+                        </div>
+
+                        <div class="divider"></div>
+
+                        <div class="inline">
+                            <a class="btn btn-primary" type="submit"
+                                >Pubblica template</a
+                            >
+                            <a class="btn" href="#preview">Anteprima</a>
+                        </div>
+                    </form>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer>
+            <div class="container footer-card">
+                <div class="inline" style="justify-content: space-between">
+                    <div>
+                        <strong>BelugaProvider</strong><br />
+                        <span class="help"
+                            >La piattaforma per il trading di template dinamici
+                            per blockchain L1.</span
+                        >
+                    </div>
+                    <div class="inline" style="gap: 16px">
+                        <a href="#terms">Termini</a>
+                        <a href="#privacy">Privacy</a>
+                        <a href="#support">Supporto</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </body>
+</html>
