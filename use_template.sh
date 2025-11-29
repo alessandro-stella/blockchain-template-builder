@@ -52,9 +52,12 @@ echo "Generated file: $out_file"
 
 echo
 echo "Selected contracts implemented in $out_file"
-echo "If you want to add your custom implementations do it now before continuing"
+echo
+echo " * WARNING: If you want to add your custom implementations do it now before continuing *"
+echo
 read -p "Press ENTER to proceed with the compilation..."
 
+echo
 echo "Starting ABI compilation with solc..."
 pushd "$project_path" > /dev/null
 
@@ -80,8 +83,16 @@ echo "Generating precompile with type=$type_name and pkg=$pkg_name"
 
 ./scripts/generate_precompile.sh --abi "$readable_file" --type "$type_name" --pkg "$pkg_name" --out "./$pkg_name"
 
+sed -i 's/{ASUITABLEHEXADDRESS}/0x0300000000000000000000000000000000000002/g' "./$pkg_name/module.go"
+
+jq --arg pkg "$pkg_name" '
+  .config += {($pkg + "Config"): {blockTimestamp: 0}}
+' ./.devcontainer/genesis-example.json > ./.devcontainer/genesis-example.tmp && mv ./.devcontainer/genesis-example.tmp ./.devcontainer/genesis-example.json
+
+sed -i "/\/\/ ADD YOUR PRECOMPILE HERE/{n;s|.*|_ \"github.com/ava-labs/precompile-evm/${pkg_name}\"|}" ./plugin/main.go
+
+
 popd > /dev/null
-echo "ABI generated in $project_path/contracts/abi"
 
 for contract in "${contracts[@]}"; do
   function_name=$(awk -v contract="$contract" '
@@ -101,33 +112,70 @@ for contract in "${contracts[@]}"; do
     go_block && in_block { print }
   ' "./templates/$template")
 
+  
+  
   awk -v template="$template" -v fn="$function_name" -v insert="$code" '
-    BEGIN {found_fn=0; inserted=0}
+    BEGIN {
+        found_fn=0
+        inserted=0
+        has_output=0
+        # Controllo se il blocco da inserire ha già un output
+        n = split(insert, lines, "\n")
+        for (i=1; i<=n; i++) {
+            if (lines[i] ~ /output[[:space:]]*:=/ || lines[i] ~ /var[[:space:]]+output/) {
+                has_output=1
+            }
+        }
+    }
     index($0, fn) {found_fn=1}
     found_fn && !inserted && /_ = inputStruct/ {
-      print $0
+        print $0
 
-	  print ""
-      print "\t//============================================================"
-      print "\t// CODE INJECTED FROM TEMPLATE " template
-      print "\t//============================================================"
-	  print ""
+        print ""
+        print "\t//============================================================"
+        print "\t// CODE INJECTED FROM TEMPLATE " template
+        print "\t//============================================================"
+        print ""
 
-      n = split(insert, lines, "\n")
-      for (i=1; i<=n; i++) {
-        if (lines[i] != "")
-          print "\t" lines[i]
-      }
+        for (i=1; i<=n; i++) {
+            if (lines[i] != "") {
+                print "\t" lines[i]
+            }
+        }
 
-  	  print ""
-      print "\t//============================================================"
-      print "\t// END OF INJECTED CODE"
-      print "\t//============================================================"
-  	  print ""
+        print ""
+        print "\t//============================================================"
+        print "\t// END OF INJECTED CODE"
+        print "\t//============================================================"
+        print ""
 
-      inserted=1
-      next
+        inserted=1
+        next
     }
-    {print}
+    {
+        if (has_output && $0 ~ /\/\/ CUSTOM CODE FOR AN OUTPUT/) {
+            next
+        }
+        print
+    }
   ' "$go_file" > "${go_file}.tmp" && mv "${go_file}.tmp" "$go_file"
 done
+
+echo
+echo "Configuration completed!"
+echo "Edit the generated package before building if you want to fine tune your project"
+echo
+
+read -p "Do you want to already build? [y/N] " choice
+
+case "$choice" in
+  [yY]|[sS])
+    pushd "$project_path" > /dev/null
+    echo
+    echo "Starting build process..."
+    ./scripts/build.sh
+    ;;
+  *)
+    echo "Exiting script"
+    ;;
+esac

@@ -1,15 +1,17 @@
-# CONTRACT: PrintToSTDOUT
+# CONTRACT: SumValues
 
-## DESCRIPTION: prints to STDOUT
+## DESCRIPTION: Returns the sum of two values
 
-## SOL INTERFACE: function printSTDOUT(string memory message) external;
+## SOL INTERFACE: function sumValues(uint32 a, uint32 b) external returns (uint64 sum);
 
 ## GO IMPLEMENTATION:
 
-//Get message from input structure
-message := inputStruct.Message
+// Get numbers from input structure
+a := inputStruct.A
+b := inputStruct.B
 
-//Print message to STDOUT
-fmt.Println(message)
+// Compute sum
+var output uint64
+output = uint64(a) + uint64(b)
 
 ---

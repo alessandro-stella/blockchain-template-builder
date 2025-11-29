@@ -27,6 +27,8 @@ if [[ ${#options[@]} -eq 0 ]]; then
     exit 1
 fi
 
+clear
+
 draw_menu() {
     if [[ $option_lines -gt 0 ]]; then
         tput cuu $option_lines

@@ -2,14 +2,13 @@
 
 project_path=$1
 mode="multiple"
-input_file="./templates/$2"
+template=$2
+input_file="./templates/$template"
 
-if [ ! -f "$input_file" ]; then
-    echo "Errore: File $input_file non trovato."
-    exit 1
-fi
-
-mapfile -t options < <(grep '^# CONTRACT:' "$input_file" | awk -F ': ' '{print $2}')
+# Aggiungo l'opzione "All of the below" come prima voce
+options=("All of the below")
+mapfile -t contracts < <(grep '^# CONTRACT:' "$input_file" | awk -F ': ' '{print $2}')
+options+=("${contracts[@]}")
 
 mapfile -t MODULE_DESCRIPTIONS < <(grep '^## DESCRIPTION: ' "$input_file" | awk -F ': ' '{print $2}')
 
@@ -34,8 +33,12 @@ draw_menu() {
     done
 
     echo
-    echo "Description of ${options[current]}"
-    echo ${MODULE_DESCRIPTIONS[current]}
+    if [[ $current -gt 0 ]]; then
+        echo "Description of ${options[current]}"
+        echo ${MODULE_DESCRIPTIONS[current-1]}
+    else
+        echo "Select this option to include ALL contracts"
+    fi
 }
 
 read_key() {
@@ -62,19 +65,47 @@ while true; do
             ;;
         ' ')
             if [[ "$mode" == "multiple" ]]; then
-                found=false
-                new_selected=()
-                for i in "${selected[@]}"; do
-                    if [[ $i -eq $current ]]; then
-                        found=true
+                if [[ $current -eq 0 ]]; then
+                    # Toggle su "All of the below"
+                    found=false
+                    new_selected=()
+                    for i in "${selected[@]}"; do
+                        if [[ $i -eq 0 ]]; then
+                            found=true
+                        else
+                            new_selected+=("$i")
+                        fi
+                    done
+                    if $found; then
+                        # Deseleziono correttamente "All of the below"
+                        selected=("${new_selected[@]}")
                     else
-                        new_selected+=("$i")
+                        # Seleziono tutto
+                        selected=($(seq 0 $((${#options[@]}-1))))
                     fi
-                done
-                if $found; then
-                    selected=("${new_selected[@]}")
                 else
-                    selected+=("$current")
+                    # Toggle su una voce normale
+                    found=false
+                    new_selected=()
+                    for i in "${selected[@]}"; do
+                        if [[ $i -eq $current ]]; then
+                            found=true
+                        else
+                            new_selected+=("$i")
+                        fi
+                    done
+                    if $found; then
+                        # Deseleziono questa voce
+                        selected=("${new_selected[@]}")
+                        # Se "All of the below" era selezionato, lo tolgo
+                        tmp=()
+                        for j in "${selected[@]}"; do
+                            [[ $j -ne 0 ]] && tmp+=("$j")
+                        done
+                        selected=("${tmp[@]}")
+                    else
+                        selected+=("$current")
+                    fi
                 fi
             else
                 selected=("$current")
@@ -94,7 +125,10 @@ fi
 if [[ ${#selected[@]} -ge 1 ]]; then
   selected_contracts=()
   for i in "${selected[@]}"; do
-    selected_contracts+=("${options[i]}")
+    # Ignoro l'opzione "All of the below" (indice 0)
+    if [[ $i -gt 0 ]]; then
+      selected_contracts+=("${options[i]}")
+    fi
   done
 
   exec ./use_template.sh "$project_path" "$2" "${selected_contracts[@]}"
