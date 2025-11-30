@@ -8,48 +8,43 @@
 </div>
 <br>
 
-Il progetto consiste in uno script bash che mira a **semplificare la creazione di precompile contracts** durante la creazione di una blockchain, attraverso lo strumento Avalanche in [Precompile-EVM](https://github.com/ava-labs/precompile-evm).
+The project, which is intended for developers building Subnet-EVM blockchains, consists of a bash script designed to simplify the creation of precompile contracts when building a blockchain using Avalanche’s [Precompile-EVM](https://github.com/ava-labs/precompile-evm).
 
-Lo script si presenta come funzione "wrapper" dei passaggi 1-4 della [fase di creazione di precompile](https://build.avax.network/academy/avalanche-l1/customizing-evm/07-hash-function-precompile/00-intro).
+The script acts as a “wrapper” around steps 1–4 of [the precompile creation workflow](https://build.avax.network/academy/avalanche-l1/customizing-evm/07-hash-function-precompile/00-intro).
 
-Altamente consigliata è la conoscenza del funzionamento di Precompile-EVM. [Qui](https://build.avax.network/academy/avalanche-l1/customizing-evm) si può seguire il tutorial fornito da Avalanche Builder Hub.
-
-
-## Funzionamento base in Precompile-EVM
-
-1. **Creare un'interfaccia Solidity per il precompile**
-2. **Generare l'ABI**
-3. **Scrivere il codice GO del precompile**
-4. **Configurare e registrare il precompile**
-5. Creare ed eseguire test
+A solid understanding of how Precompile-EVM works is strongly recommended. The tutorial provided by Avalanche Builder Hub can be followed [here](https://build.avax.network/academy/avalanche-l1/customizing-evm).
 
 
-## Il problema
+## Basic workflow in Precompile-EVM
 
-La creazione di interfacce Solidity, assieme alla scrittura in Go della logica dei precompile contracts, può risultare lenta se non persino ostica, specialmente per un Contract Developer alle prime armi.
+1. **Create a Solidity interface for the precompile**
+2. **Generate the ABI**
+3. **Write the GO implementation of the precompile**
+4. **Configure and register the precompile**
+5. Create and run tests
 
-Viene immediata la necessità di avere uno strumento che implementi **template** sicuri, efficienti, affidabili e personalizzabili di precompile contracts.
 
-Se i template sono gestiti da una community attiva, come quella di Avalanche, allora qualsiasi Contract Developer che utilizzi Precompile-EVM avrà a disposizione migliaia di strumenti per lo sviluppo della propria blockchain, velocizzando le tempistiche di coding e riducendo eventuali errori o bug al minimo.
+## The problem
+
+Creating Solidity interfaces, along with writing the GO logic for precompile contracts, can be time-consuming and at times difficult, especially for inexperienced Contract Developers.
+
+This naturally creates the need for a tool that provides safe, efficient, reliable, and customizable templates for precompile contracts.
+
+If these templates are maintained by an active community such as Avalanche’s, then any Contract Developer using Precompile-EVM would have access to a large set of development tools for their blockchain, reducing coding time and minimizing potential errors or bugs.
 
 
-## La soluzione
+## The solution
 
-0. Fornire al Contract Developer la scelta di utilizzare template o di partire da zero.
+0. Let the Contract Developer decide whether to start from scratch or with a template.
+1. If the first option is chosen, the script is started and allows the user to select a blockchain model (e.g., blockchain for cryptocurrency transactions).
+2. The user can then select the contracts they want to include from a set of predefined precompile contracts.
+3. If the developer wishes to add their own precompile contracts, they are prompted to it now, by inserting the function signatures into the appropriate `.sol` interface file.
+4. The implementations of the precompiles are generated.
+5. Final configurations are applied (assigning each precompile's address, etc...).
 
-1. Nel caso in cui venga scelta la prima opzione, lo script è avviato e viene data la possibilità di selezionare un modello di blockchain (e.g. blockchain per transazione di criptovalute).
+Example:
 
-2. Successivamente si potranno scegliere, da un insieme di precompile contracts predefiniti, tutti i contratti che il Developer desidera usare.
-
-3. Se il Contract Developer desidera aggiungere i propri precompile contracts, è adesso invitato ad inserire le firme nell'opportuno file di Interfaccia`.sol`
-
-4. Vengono quindi create le implementazioni dei precompile
-
-5. Infine vengono eseguite configurazioni finali (assegnazione dell'indirizzo di ogni precompile...)
-
-Esempio di utilizzo:
-
-0. (scelto di usare template)
+0. (Start from tamplate is chosen)
 ```
 ./select_template.sh FULL/PATH/TO/precompile-evm
 
@@ -108,28 +103,27 @@ Do you want to already build? [y/N]
 
 ```
 
-## Manutenibilità dei template
+## Template mantainability
 
-Il progetto è pensato per essere interamente community driven.
+The project is intended to be entirely community-driven.
 
-Per ora si basa interamente su Precompile-EVM, ma in futuro può basarsi su una L1 standalone.
+It currently relies fully on Precompile-EVM, but in the future it may rely on a standalone L1.
 
-L'idea è quella di avere un luogo sicuro, custodito ed aggiornato da una community attiva, per i template dei precompile contracts. 
+The idea is to provide a secure, maintained, and up-to-date location, that is managed by an active community, for precompile contract templates.
 
-Più è il numero degli utenti che contribuiscono al progetto, fornendo template di blockchain
-e funzioni, più gli stessi utenti avranno a disposizione strumenti affidabili per lo sviluppo della propria blockchain.
+The more users contribute blockchain templates and functions, the more reliable tools will be available to everyone for developing their own blockchains.
 
-Dunque, in un futuro non troppo lontano, qualsiasi programmatore, indipendentemente dalla sua esperienza, potrà usufruire di moltissimi modelli per qualsiasi blockchain.
+Thus, in the near future, any programmer—regardless of experience—could rely on a wide range of models for any blockchain.
 
 
 # TODO
 
-* Marketplace di template (è fornita una semplice implementazione grafica)
+* Template marketplace (A basic graphic implementation is provided)
 
-* Aggiungere la possibilità di utilizzare template online acquistati sul marketplace
+* Add the ability to use marketplace-bought templates 
 
-* Gestione piu sicura degli errori durante l'esecuzione dello script
+* Safer error handling during script execution may be needed.
 
-* Aggiungere sezione del template che gestisca eventuali librerie esterne richieste dai contracts
+* Add specific section that allows the addition of external libraries required by precompile contracts.
 
-* Implementare la gestione dinamica del gas per operazioni computazionalmente pesanti
+* Dynamic gas manager for computationally intensive operations.
